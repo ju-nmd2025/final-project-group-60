@@ -9,6 +9,7 @@ let scrollLine = 200;
 //3 lanes
 let lanes = [30, 160, 280];
 let lastLane = -1;
+let lastScoredPlatform = null;
 
 // Grass
 let floorHeight = 140;
@@ -114,6 +115,10 @@ function draw() {
     
       //collision test
       if (p.checkCollision(character)) {
+        if (lastScoredPlatform !== p) {
+          score += 1;
+          lastScoredPlatform = p;
+        }
         p.onJump();
         character.jump();
       }
@@ -126,9 +131,7 @@ function draw() {
  
 
     character.draw();
-     // update score
-  score += 0.1;
-
+    
   // draw score
   fill(255);
   textSize(16);
