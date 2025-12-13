@@ -5,6 +5,10 @@ import Character from "./character";
 let character;
 let platforms = [];
 let stars = [];
+let scrollLine = 200;
+//3 lanes
+let lanes = [30, 160, 280];
+let lastLane = -1;
 
 // Grass
 let floorHeight = 140;
@@ -37,9 +41,8 @@ function setup() {
 
 
   //platforms check
-  platforms.push(new Platform(150, 430, 80, 20, "normal"));
-  platforms.push(new Platform(50, 320, 80, 20, "moving"));
-  platforms.push(new Platform(260, 250, 80, 20, "breaking"));
+  platforms = [];
+  createPlatforms(10);
 
   character = new Character(
     width / 2 - 25, 
@@ -68,8 +71,45 @@ function draw() {
 
     handleInput();
     character.update();
+
+    //camera scroll
+    if (character.y < scrollLine) {
+      let dy = scrollLine - character.y; //how much to scroll down
+
+      character.y = scrollLine; //keep cat at scroll line
+
+      //move platforms down
+      for (let p of platforms) {
+        p.y += dy;
+      }
+
+      //move stars down
+      for (let s of stars) {
+        s.y +=dy;
+      }
+
+      //floor and sprouts too
+      floorY += dy;
+      for (let s of sprouts) {
+        s.y += dy;
+      }
+      
+    }
+
     for (let p of platforms) {
       p.update();
+
+      if (p.y > height) {
+        let gap = 70;
+        let highestY = getHighestPlatformY();
+
+        p.y = highestY - gap;
+        p.x = pickLaneX(p.w);
+        p.type = pickPlatformType();
+        p.broken = false;
+        p.h = 20;
+      }
+
       p.draw();
     
       //collision test
@@ -80,7 +120,7 @@ function draw() {
     }
 
     //ground limit
-    if (character.y + character.h > floorY) {
+    if (character.y > height) {
   gameOver = true;
 }
  
@@ -200,6 +240,47 @@ function drawGameOverScreen() {
   text("Press SPACE to restart", width / 2, height / 2 + 30);
 }
 
+//platform creation
+function createPlatforms(count) {
+  let gap = 70; 
+
+  for (let i = 0; i < count; i++) {
+    let y = floorY - 80 - i*gap; //stacks upward from floor
+    let type = pickPlatformType();
+    let x = pickLaneX(80);
+    platforms.push(new Platform(x, y, 80, 20, type));
+  }
+}
+
+//platform simulator
+function pickPlatformType() {
+  let r = random(1);
+  if (r<0.45) return "normal";
+  if (r<0.75) return "moving";
+  return "breaking";
+}
+
+//pick lanes
+function pickLaneX(w) {
+  let lane = int(random(lanes.length));
+  if (lane === lastLane) lane = (lane + 1) % lanes.length;
+  lastLane = lane;
+
+  //center platforms inside canvas
+  let x = lanes[lane];
+  x = constrain(x, 20, width - w- 20);
+  return x;
+}
+
+//remove repeating x platforms
+function getHighestPlatformY() {
+  let highest = platforms[0].y;
+  for (let p of platforms) {
+    if (p.y < highest) highest = p.y;
+  }
+  return highest;
+}
+
 
 //jump test
 function keyPressed() {
@@ -220,6 +301,9 @@ function keyPressed() {
       character.x = width / 2 - 25;
       character.y = floorY - 50;
       character.vy = 0;
+
+      platforms = [];
+      createPlatforms(10);
     }
   }
 }
