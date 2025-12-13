@@ -36,9 +36,12 @@ function setup() {
   platforms.push(new Platform(50, 320, 80, 20, "moving"));
   platforms.push(new Platform(260, 250, 80, 20, "breaking"));
 
-  character = new Character (platforms[0].x + platforms[0].w/ 2-25, platforms[0].y-50, 50, 50);
-
-  
+  character = new Character(
+    width / 2 - 25, 
+    floorY - 50,    
+    50,
+    50
+  );
 }
 
 function draw() {
