@@ -44,13 +44,23 @@ function setup() {
 function draw() {
     drawBackground();
     drawFloor();
+    handleInput();
     for (let p of platforms) {
       p.update();
       p.draw();
     }
     character.draw();
 }
+function handleInput() {
+  let speed = 5;
 
+  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) { // A
+    character.x -= speed;
+  }
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) { // D
+    character.x += speed;
+  }
+}  
 // Background (gradient + stars)
 function drawBackground() {
   for (let y = 0; y < height; y++) {
