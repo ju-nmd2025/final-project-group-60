@@ -4,11 +4,24 @@ import Character from "./character";
 //Globals
 let character;
 let platforms = [];
+let stars = [];
 
 
 //Setup
 function setup() {
   createCanvas(400, 600);
+
+    // stars
+  stars = [];
+  for (let i = 0; i < 40; i++) {
+    stars.push({
+      x: random(width),
+      y: random(height),
+      r: random(1, 3),
+      speed: random(0.1, 0.4)
+    });
+  }
+
 
   //platforms check
   platforms.push(new Platform(150, 430, 80, 20, "normal"));
@@ -21,11 +34,34 @@ function setup() {
 }
 
 function draw() {
-    background(100, 100, 100);
+    drawBackground();
 
     character.draw();
     for (let p of platforms) {
       p.update();
       p.draw();
     }
+}
+
+// Background (gradient + stars)
+function drawBackground() {
+  for (let y = 0; y < height; y++) {
+    stroke(
+      lerp(30, 5, y / height),
+      lerp(10, 15, y / height),
+      lerp(60, 25, y / height)
+    );
+    line(0, y, width, y);
+  }
+
+  noStroke();
+  fill(255, 240);
+  for (let s of stars) {
+    circle(s.x, s.y, s.r);
+    s.y += s.speed;
+    if (s.y > height) {
+      s.y = 0;
+      s.x = random(width);
+    }
+  }
 }
