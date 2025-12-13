@@ -12,6 +12,11 @@ let floorY;
 let grassLines = [];
 let sprouts = [];
 
+// Game state
+let gameStarted = false;
+let gameOver = false;
+let score = 0;
+
 //Setup
 function setup() {
   createCanvas(400, 600);
@@ -45,8 +50,22 @@ function setup() {
 }
 
 function draw() {
+   // start screen
+  if (!gameStarted && !gameOver) {
+    background(255);
+    drawStartScreen();
+    return;
+  }
+   // game over screen
+  if (gameOver) {
+    background(255);
+     drawGameOverScreen();
+    return;
+  }
+  //main game
     drawBackground();
     drawFloor();
+
     handleInput();
     character.update();
     for (let p of platforms) {
@@ -62,11 +81,19 @@ function draw() {
 
     //ground limit
     if (character.y + character.h > floorY) {
-      character.y = floorY - character.h;
-      character.vy = 0;
-    }
+  gameOver = true;
+}
+ 
 
     character.draw();
+     // update score
+  score += 0.1;
+
+  // draw score
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, TOP);
+  text("Score: " + int(score), 10, 10);
 }
 function handleInput() {
   let speed = 5;
@@ -76,6 +103,14 @@ function handleInput() {
   }
   if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) { // D
     character.x += speed;
+  }
+
+  // horizontal screen wrapping
+  if (character.x > width) {
+    character.x = -character.w;
+  }
+  if (character.x + character.w < 0) {
+    character.x = width;
   }
 }  
 
@@ -144,10 +179,47 @@ function drawFloor() {
   }
   strokeWeight(1);
 }
+//start and end screens
+function drawStartScreen() {
+  fill(0);
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  text("Doodle Jump", width / 2, height / 2 - 40);
+  textSize(18);
+  text("Press SPACE to start", width / 2, height / 2);
+  text("Use ← → or A/D to move", width / 2, height / 2 + 30);
+}
+
+function drawGameOverScreen() {
+  fill(0);
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  text("Game Over", width / 2, height / 2 - 40);
+  textSize(18);
+  text("Score: " + int(score), width / 2, height / 2);
+  text("Press SPACE to restart", width / 2, height / 2 + 30);
+}
+
 
 //jump test
 function keyPressed() {
   if (key === " ") {
-    character.jump(); 
+    // start game
+    if (!gameStarted && !gameOver) {
+      gameStarted = true;
+      score = 0;
+      character.jump(); // first jump from ground
+    }
+    // restart after game over
+    else if (gameOver) {
+      gameOver = false;
+      gameStarted = false;
+      score = 0;
+
+      // reset player to initial position
+      character.x = width / 2 - 25;
+      character.y = floorY - 50;
+      character.vy = 0;
+    }
   }
 }
