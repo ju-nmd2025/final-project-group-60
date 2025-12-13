@@ -300,6 +300,13 @@ function keyPressed() {
       gameStarted = false;
       score = 0;
 
+      //reset world to normal
+      generateFloorArt();
+
+      //reset platforms
+      platforms = [];
+      createPlatforms(10);
+
       // reset player to initial position
       character.x = width / 2 - 25;
       character.y = floorY - 50;
