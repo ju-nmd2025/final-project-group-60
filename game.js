@@ -6,6 +6,11 @@ let character;
 let platforms = [];
 let stars = [];
 
+// Grass
+let floorHeight = 140;
+let floorY;
+let grassLines = [];
+let sprouts = [];
 
 //Setup
 function setup() {
@@ -22,6 +27,9 @@ function setup() {
     });
   }
 
+    //grass
+  generateFloorArt();
+
 
   //platforms check
   platforms.push(new Platform(150, 430, 80, 20, "normal"));
@@ -35,12 +43,12 @@ function setup() {
 
 function draw() {
     drawBackground();
-
-    character.draw();
+    drawFloor();
     for (let p of platforms) {
       p.update();
       p.draw();
     }
+    character.draw();
 }
 
 // Background (gradient + stars)
@@ -64,4 +72,46 @@ function drawBackground() {
       s.x = random(width);
     }
   }
+}
+
+// Grass/floor
+function generateFloorArt() {
+  floorY = height - floorHeight;
+
+  grassLines = [];
+  for (let x = 0; x < width; x += 6) {
+    grassLines.push({ x: x, h: random(4, 10) });
+  }
+
+  sprouts = [];
+  for (let i = 0; i < 25; i++) {
+    sprouts.push({
+      x: random(width),
+      y: floorY + random(15, floorHeight - 10),
+      h1: random(8, 16),
+      h2: random(6, 12)
+    });
+  }
+}
+
+function drawFloor() {
+  noStroke();
+  fill(90, 180, 90);
+  rect(0, floorY, width, floorHeight);
+
+  fill(70, 150, 70);
+  rect(0, floorY, width, 14);
+
+  stroke(60, 130, 60, 120);
+  for (let g of grassLines) {
+    line(g.x, floorY, g.x, floorY + g.h);
+  }
+
+  stroke(50, 120, 50);
+  strokeWeight(1.2);
+  for (let s of sprouts) {
+    line(s.x, s.y, s.x - 3, s.y - s.h1);
+    line(s.x, s.y, s.x + 3, s.y - s.h2);
+  }
+  strokeWeight(1);
 }
