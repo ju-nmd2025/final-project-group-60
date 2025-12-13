@@ -48,10 +48,24 @@ function draw() {
     drawBackground();
     drawFloor();
     handleInput();
+    character.update();
     for (let p of platforms) {
       p.update();
       p.draw();
+    
+      //collision test
+      if (p.checkCollision(character)) {
+        p.onJump();
+        character.jump();
+      }
     }
+
+    //ground limit
+    if (character.y + character.h > floorY) {
+      character.y = floorY - character.h;
+      character.vy = 0;
+    }
+
     character.draw();
 }
 function handleInput() {
@@ -64,6 +78,8 @@ function handleInput() {
     character.x += speed;
   }
 }  
+
+
 // Background (gradient + stars)
 function drawBackground() {
   for (let y = 0; y < height; y++) {
@@ -127,4 +143,11 @@ function drawFloor() {
     line(s.x, s.y, s.x + 3, s.y - s.h2);
   }
   strokeWeight(1);
+}
+
+//jump test
+function keyPressed() {
+  if (key === " ") {
+    character.jump(); 
+  }
 }

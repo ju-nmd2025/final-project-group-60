@@ -35,6 +35,25 @@ export default class Platform {
     }
   }
 
+  checkCollision(character) {
+    if(this.type === "breaking" && this.broken) return false;
+    if (character.vy <= 0) return false;
+
+    //horizontal overlap
+    if (character.x + character.w < this.x) return false;
+    if (character.x > this.x + this.w) return false;
+
+    const prevBottom = (character.y + character.h) - character.vy;
+
+    if (prevBottom <= this.y && character.y + character.h >= this.y) {
+      character.y = this.y - character.h;
+      return true;
+    }
+
+    return false;
+    
+  }
+
   onJump() {
     if (this.type === "breaking") {
       this.broken = true;
