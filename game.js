@@ -1,5 +1,5 @@
-import Platform from "./platform";
-import Character from "./character";
+import Platform from "./platform.js";
+import Character from "./character.js";
 
 //Globals
 let character;
@@ -317,3 +317,8 @@ function keyPressed() {
     }
   }
 }
+
+// expose p5 callbacks when using ES modules
+window.setup = setup;
+window.draw = draw;
+window.keyPressed = keyPressed;
