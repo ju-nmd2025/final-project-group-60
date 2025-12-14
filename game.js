@@ -139,7 +139,7 @@ function draw() {
   text("Score: " + int(score), 10, 10);
 }
 function handleInput() {
-  let speed = 5;
+  let speed = 8;
 
   if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) { // A
     character.x -= speed;
@@ -255,12 +255,9 @@ function createPlatforms(count) {
   }
 }
 
-//platform simulator
 function pickPlatformType() {
-  let r = random(1);
-  if (r<0.45) return "normal";
-  if (r<0.75) return "moving";
-  return "breaking";
+  const types = ["normal", "moving", "breaking"];
+  return random(types); // p5 умеет random по массиву
 }
 
 //pick lanes
