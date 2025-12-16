@@ -308,9 +308,6 @@ function keyPressed() {
       character.x = width / 2 - 25;
       character.y = floorY - 50;
       character.vy = 0;
-
-      platforms = [];
-      createPlatforms(10);
     }
   }
 }
