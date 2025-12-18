@@ -257,7 +257,7 @@ function createPlatforms(count) {
 
 function pickPlatformType() {
   const types = ["normal", "moving", "breaking"];
-  return random(types); // p5 умеет random по массиву
+  return random(types); 
 }
 
 //pick lanes
@@ -308,6 +308,7 @@ function keyPressed() {
       character.x = width / 2 - 25;
       character.y = floorY - 50;
       character.vy = 0;
+
     }
   }
 }
